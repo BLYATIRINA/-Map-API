@@ -58,10 +58,10 @@ class Map_Window(QtWidgets.QMainWindow):
     def keyPressEvent(self, event):
         key = event.key()
         print(event.key())
-        if event.key() == Qt.Key_Up:
+        if event.key() == Qt.Key_PageUp:
             self.spn = [i - i / 2 for i in self.spn]
             self.get_map()
-        elif event.key() == Qt.Key_Down:
+        elif event.key() == Qt.Key_PageUp:
             self.spn = [i + i / 2 for i in self.spn]
             print(','.join(list(map(str, self.spn))))
             if self.spn[0] > 90.0:
