@@ -56,16 +56,28 @@ class Map_Window(QtWidgets.QMainWindow):
         self.label.setPixmap(pixmap)
 
     def keyPressEvent(self, event):
-        key = event.key()
-        print(event.key())
         if event.key() == Qt.Key_PageUp:
             self.spn = [i - i / 2 for i in self.spn]
             self.get_map()
-        elif event.key() == Qt.Key_PageUp:
+        elif event.key() == Qt.Key_PageDown:
             self.spn = [i + i / 2 for i in self.spn]
             print(','.join(list(map(str, self.spn))))
             if self.spn[0] > 90.0:
                 self.spn = [90.0, 90.0]
+            self.get_map()
+        elif event.key() == Qt.Key_Up:
+            print(self.long)
+            self.lat = str(float(self.lat) + self.spn[0])
+            self.get_map()
+        elif event.key() == Qt.Key_Down:
+            self.lat = str(float(self.lat) - self.spn[0])
+            self.get_map()
+        elif event.key() == Qt.Key_Left:
+            print(self.long)
+            self.long = str(float(self.long) - self.spn[0])
+            self.get_map()
+        elif event.key() == Qt.Key_Right:
+            self.long = str(float(self.long) + self.spn[0])
             self.get_map()
 
 

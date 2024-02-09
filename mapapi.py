@@ -52,10 +52,10 @@ class MainWindow_Ui(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "TextLabel"))
-        self.label_3.setText(_translate("MainWindow", "TextLabel"))
+        self.label_2.setText(_translate("MainWindow", "Долгота"))
+        self.label_3.setText(_translate("MainWindow", "Широта"))
         self.label.setText(_translate("MainWindow", "Введите координаты:"))
-        self.pushButton.setText(_translate("MainWindow", "PushButton"))
+        self.pushButton.setText(_translate("MainWindow", "Найти"))
 
 
 if __name__ == "__main__":
