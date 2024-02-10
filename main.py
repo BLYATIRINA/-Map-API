@@ -56,12 +56,16 @@ class Map_Window(QtWidgets.QMainWindow):
         self.search_line.resize(200, 30)
         self.search_button = QtWidgets.QToolButton(self)
         self.reset = QtWidgets.QToolButton(self)
-        self.reset.move(0, 480)
-        self.reset.resize(600, 30)
+        self.reset.move(300, 480)
+        self.reset.resize(300, 30)
         self.reset.setText('Сброс поискового результата')
         self.reset.clicked.connect(self.reset_point)
         self.search_button.setText('Искать')
         self.search_button.move(200, 450)
+        self.address = QtWidgets.QLineEdit(self)
+        self.address.move(0, 480)
+        self.address.resize(300, 30)
+        self.address.blockSignals(True)
         self.search_button.clicked.connect(self.search)
         layout = QtWidgets.QHBoxLayout(self)
         layout.addWidget(self.label)
@@ -78,6 +82,7 @@ class Map_Window(QtWidgets.QMainWindow):
 
     def reset_point(self):
         self.pt = ''
+        self.address.setText('')
         self.setFocus()
         self.get_map()
 
@@ -93,9 +98,11 @@ class Map_Window(QtWidgets.QMainWindow):
         response = requests.get(GEOCODER, params=geocoder_params)
         coords = response.json()["response"]["GeoObjectCollection"][
     "featureMember"][0]["GeoObject"]["Point"]["pos"].split(' ')
+        self.address.setText(response.json()['response']["GeoObjectCollection"]['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'])
         self.long = coords[0]
         self.lat = coords[1]
         self.pt = f'{self.long},{self.lat},pm2rdm'
+        #self.address.setText()
         self.setFocus()
         self.get_map()
 
