@@ -41,23 +41,27 @@ class Map_Window(QtWidgets.QMainWindow):
     def set_ui(self):
         self.label = QtWidgets.QLabel(self)
         self.label.resize(600, 450)
-        self.resize(600, 450)
+        self.resize(600, 510)
         self.scheme = QtWidgets.QToolButton(self)
         self.scheme.setText('Схема')
-        self.scheme.move(300, 420)
+        self.scheme.move(300, 450)
         self.sputnic = QtWidgets.QToolButton(self)
         self.sputnic.setText('Спутник')
-        self.sputnic.move(400, 420)
+        self.sputnic.move(400, 450)
         self.hybride = QtWidgets.QToolButton(self)
         self.hybride.setText('Гибрид')
-        self.hybride.move(500, 420)
+        self.hybride.move(500, 450)
         self.search_line = QtWidgets.QLineEdit(self)
-        self.search_line.move(0, 420)
+        self.search_line.move(0, 450)
         self.search_line.resize(200, 30)
         self.search_button = QtWidgets.QToolButton(self)
-
+        self.reset = QtWidgets.QToolButton(self)
+        self.reset.move(0, 480)
+        self.reset.resize(600, 30)
+        self.reset.setText('Сброс поискового результата')
+        self.reset.clicked.connect(self.reset_point)
         self.search_button.setText('Искать')
-        self.search_button.move(200, 420)
+        self.search_button.move(200, 450)
         self.search_button.clicked.connect(self.search)
         layout = QtWidgets.QHBoxLayout(self)
         layout.addWidget(self.label)
@@ -69,6 +73,12 @@ class Map_Window(QtWidgets.QMainWindow):
 
     def change_view(self, view):
         self.view = view
+        self.get_map()
+
+
+    def reset_point(self):
+        self.pt = ''
+        self.setFocus()
         self.get_map()
 
 
