@@ -38,10 +38,11 @@ class Map_Window(QtWidgets.QMainWindow):
         self.get_map()
 
 
+
     def set_ui(self):
         self.label = QtWidgets.QLabel(self)
         self.label.resize(600, 450)
-        self.resize(600, 510)
+        self.setFixedSize(600, 540)
         self.scheme = QtWidgets.QToolButton(self)
         self.scheme.setText('Схема')
         self.scheme.move(300, 450)
@@ -56,16 +57,20 @@ class Map_Window(QtWidgets.QMainWindow):
         self.search_line.resize(200, 30)
         self.search_button = QtWidgets.QToolButton(self)
         self.reset = QtWidgets.QToolButton(self)
-        self.reset.move(300, 480)
-        self.reset.resize(300, 30)
+        self.reset.move(400, 480)
+        self.reset.resize(200, 30)
         self.reset.setText('Сброс поискового результата')
         self.reset.clicked.connect(self.reset_point)
         self.search_button.setText('Искать')
         self.search_button.move(200, 450)
         self.address = QtWidgets.QLineEdit(self)
+        self.check_post_index = QtWidgets.QCheckBox(self)
+        self.check_post_index.setText('Почтовый индекс')
+        self.check_post_index.move(0, 510)
+        self.check_post_index.resize(200, 30)
         self.address.move(0, 480)
-        self.address.resize(300, 30)
-        self.address.blockSignals(True)
+        self.address.resize(400, 30)
+        self.address.setEnabled(False)
         self.search_button.clicked.connect(self.search)
         layout = QtWidgets.QHBoxLayout(self)
         layout.addWidget(self.label)
@@ -80,6 +85,7 @@ class Map_Window(QtWidgets.QMainWindow):
         self.get_map()
 
 
+
     def reset_point(self):
         self.pt = ''
         self.address.setText('')
@@ -88,6 +94,7 @@ class Map_Window(QtWidgets.QMainWindow):
 
 
     def search(self):
+        post_index = ''
 
         geocoder_params = {
             "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
@@ -96,13 +103,21 @@ class Map_Window(QtWidgets.QMainWindow):
             }
 
         response = requests.get(GEOCODER, params=geocoder_params)
+        print(response.json())
         coords = response.json()["response"]["GeoObjectCollection"][
     "featureMember"][0]["GeoObject"]["Point"]["pos"].split(' ')
-        self.address.setText(response.json()['response']["GeoObjectCollection"]['featureMember'][0]['GeoObject']['metaDataProperty']['GeocoderMetaData']['text'])
+        if self.check_post_index.isChecked():
+            post_index = response.json()["response"]["GeoObjectCollection"]['featureMember']\
+                [0]['GeoObject']['metaDataProperty']['GeocoderMetaData']\
+                ['Address'].get('postal_code', 'Нет почтового индекса')
+        self.address.setText(response.json()['response']["GeoObjectCollection"]
+                             ['featureMember'][0]['GeoObject']
+                             ['metaDataProperty']['GeocoderMetaData']
+                             ['text'] + ' ' + post_index)
+
         self.long = coords[0]
         self.lat = coords[1]
         self.pt = f'{self.long},{self.lat},pm2rdm'
-        #self.address.setText()
         self.setFocus()
         self.get_map()
 
