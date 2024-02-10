@@ -11,7 +11,6 @@ MAP_FILENAME = 'map.png'
 
 #Управление сейчас производится с помощью клавиш WASD.
 class MainWindow(QtWidgets.QMainWindow, MainWindow_Ui):
-
     def __init__(self):
         super().__init__()
         self.setupUi(self)
