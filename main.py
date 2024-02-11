@@ -122,7 +122,6 @@ class Map_Window(QtWidgets.QMainWindow):
             ['Address'].get('postal_code', 'Нет почтового индекса')
         return postal_index
 
-
     def get_geocoder(self):
         geocoder_params = {
             "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
