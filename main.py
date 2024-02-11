@@ -17,12 +17,20 @@ class MainWindow(QtWidgets.QMainWindow, MainWindow_Ui):
         self.setupUi(self)
         self.pushButton.clicked.connect(self.get_map)
 
+
     def get_map(self):
-        global params
         long = self.lineEdit.text()
         lat = self.lineEdit_2.text()
-        self.scndWnd = Map_Window(long, lat)
-        self.scndWnd.show()
+        try:
+            if -180.0 > float(long) > 180.0 and -80.0 > float(lat) > 80.0:
+                self.scndWnd = Map_Window(long, lat)
+                self.scndWnd.show()
+            else:
+                pass
+        except Exception:
+            pass
+
+
 
 
 class Map_Window(QtWidgets.QMainWindow):
@@ -68,6 +76,7 @@ class Map_Window(QtWidgets.QMainWindow):
         self.check_post_index.setText('Почтовый индекс')
         self.check_post_index.move(0, 510)
         self.check_post_index.resize(200, 30)
+        self.check_post_index.clicked.connect(self.add_postal_index)
         self.address.move(0, 480)
         self.address.resize(400, 30)
         self.address.setEnabled(False)
@@ -79,6 +88,18 @@ class Map_Window(QtWidgets.QMainWindow):
         self.scheme.clicked.connect(lambda: self.change_view('map'))
         self.sputnic.clicked.connect(lambda: self.change_view('sat'))
         self.hybride.clicked.connect(lambda: self.change_view('sat,skl'))
+
+
+    def add_postal_index(self):
+        address_text = self.address.text()
+        if not address_text or address_text == "Ошибка":
+            pass
+        elif self.check_post_index.isChecked():
+            if address_text:
+                self.address.setText(f'{address_text}, {self.get_postal_index()}')
+        else:
+            self.address.setText(', '.join(address_text.split(', ')[:-1]))
+
 
     def change_view(self, view):
         self.view = view
@@ -93,33 +114,50 @@ class Map_Window(QtWidgets.QMainWindow):
         self.get_map()
 
 
-    def search(self):
-        post_index = ''
+    def get_postal_index(self):
 
+        response = self.get_geocoder()
+        postal_index = response.json()["response"]["GeoObjectCollection"]['featureMember']\
+            [0]['GeoObject']['metaDataProperty']['GeocoderMetaData']\
+            ['Address'].get('postal_code', 'Нет почтового индекса')
+        return postal_index
+
+
+    def get_geocoder(self):
         geocoder_params = {
             "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-            "geocode": self.search_line.text(),
+            "geocode": str(self.search_line.text()),
             "format": "json",
-            }
+        }
 
         response = requests.get(GEOCODER, params=geocoder_params)
-        print(response.json())
-        coords = response.json()["response"]["GeoObjectCollection"][
-    "featureMember"][0]["GeoObject"]["Point"]["pos"].split(' ')
-        if self.check_post_index.isChecked():
-            post_index = response.json()["response"]["GeoObjectCollection"]['featureMember']\
-                [0]['GeoObject']['metaDataProperty']['GeocoderMetaData']\
-                ['Address'].get('postal_code', 'Нет почтового индекса')
-        self.address.setText(response.json()['response']["GeoObjectCollection"]
-                             ['featureMember'][0]['GeoObject']
-                             ['metaDataProperty']['GeocoderMetaData']
-                             ['text'] + ' ' + post_index)
+        if str(response) == '<Response [200]>':
+            pass
+        else:
+            return response
 
-        self.long = coords[0]
-        self.lat = coords[1]
-        self.pt = f'{self.long},{self.lat},pm2rdm'
-        self.setFocus()
-        self.get_map()
+
+    def search(self):
+        post_index = ''
+        response = self.get_geocoder()
+        if not response:
+            self.address.setText('Ошибка')
+        else:
+            coords = response.json()["response"]["GeoObjectCollection"][
+                "featureMember"][0]["GeoObject"]["Point"]["pos"].split(' ')
+
+            if self.check_post_index.isChecked():
+                post_index = self.get_postal_index()
+            self.address.setText(response.json()['response']["GeoObjectCollection"]
+                                 ['featureMember'][0]['GeoObject']
+                                 ['metaDataProperty']['GeocoderMetaData']
+                                 ['text'] + ' ' + post_index)
+
+            self.long = coords[0]
+            self.lat = coords[1]
+            self.pt = f'{self.long},{self.lat},pm2rdm'
+            self.setFocus()
+            self.get_map()
 
 
 

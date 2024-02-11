@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class MainWindow_Ui(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(389, 91)
+        MainWindow.setFixedSize(389, 91)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
