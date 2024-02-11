@@ -6,12 +6,15 @@ from mapapi import MainWindow_Ui
 from PyQt5.QtCore import Qt
 from PIL import Image
 from io import BytesIO
+
 MAP_API_SERVER = "http://static-maps.yandex.ru/1.x/"
 GEOCODER = "http://geocode-maps.yandex.ru/1.x/"
 MAP_FILENAME = 'map.png'
 
-#Управление сейчас производится со стрелочками.
+
+
 class MainWindow(QtWidgets.QMainWindow, MainWindow_Ui):
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -21,14 +24,11 @@ class MainWindow(QtWidgets.QMainWindow, MainWindow_Ui):
     def get_map(self):
         long = self.lineEdit.text()
         lat = self.lineEdit_2.text()
-        try:
-            if -180.0 > float(long) > 180.0 and -80.0 > float(lat) > 80.0:
-                self.scndWnd = Map_Window(long, lat)
-                self.scndWnd.show()
-            else:
-                pass
-        except Exception:
-            pass
+        print('dqwd')
+        self.scndWnd = Map_Window(long, lat)
+        self.scndWnd.show()
+
+
 
 
 
